@@ -1,0 +1,6 @@
+@Cilt_Beninden_Kanser_Api.WebAPI_HostAddress = http://localhost:5062
+
+GET {{Cilt_Beninden_Kanser_Api.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

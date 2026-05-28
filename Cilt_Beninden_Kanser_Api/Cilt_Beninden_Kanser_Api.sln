@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{AA6B3165-DF57-44DB-A41E-6E7243A4975D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{80301295-48A5-4D7A-882A-C4B324E7A80A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{F7332926-D2AD-406B-9812-757E77F972E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{A9908A47-5144-4A04-9CCA-AACEFA6022C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cilt_Beninden_Kanser_Api.Domain", "Cilt_Beninden_Kanser_Api.Domain\Cilt_Beninden_Kanser_Api.Domain.csproj", "{9EA54223-8C5D-4125-A254-650942EC6710}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cilt_Beninden_Kanser_Api.Application", "Cilt_Beninden_Kanser_Api.Application\Cilt_Beninden_Kanser_Api.Application.csproj", "{BE6797C4-3B2C-45C1-B8C2-B9344698AD27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cilt_Beninden_Kanser_Api.Infrastructure", "Cilt_Beninden_Kanser_Api.Infrastructure\Cilt_Beninden_Kanser_Api.Infrastructure.csproj", "{1B238666-52FE-402E-9F94-C77D7883C84A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cilt_Beninden_Kanser_Api.WebAPI", "Cilt_Beninden_Kanser_Api.WebAPI\Cilt_Beninden_Kanser_Api.WebAPI.csproj", "{A0010DA6-7CD4-4E40-9775-427FC473EBE6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9EA54223-8C5D-4125-A254-650942EC6710} = {AA6B3165-DF57-44DB-A41E-6E7243A4975D}
+		{BE6797C4-3B2C-45C1-B8C2-B9344698AD27} = {80301295-48A5-4D7A-882A-C4B324E7A80A}
+		{1B238666-52FE-402E-9F94-C77D7883C84A} = {F7332926-D2AD-406B-9812-757E77F972E8}
+		{A0010DA6-7CD4-4E40-9775-427FC473EBE6} = {A9908A47-5144-4A04-9CCA-AACEFA6022C1}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9EA54223-8C5D-4125-A254-650942EC6710}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EA54223-8C5D-4125-A254-650942EC6710}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EA54223-8C5D-4125-A254-650942EC6710}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EA54223-8C5D-4125-A254-650942EC6710}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE6797C4-3B2C-45C1-B8C2-B9344698AD27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE6797C4-3B2C-45C1-B8C2-B9344698AD27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE6797C4-3B2C-45C1-B8C2-B9344698AD27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE6797C4-3B2C-45C1-B8C2-B9344698AD27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B238666-52FE-402E-9F94-C77D7883C84A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B238666-52FE-402E-9F94-C77D7883C84A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B238666-52FE-402E-9F94-C77D7883C84A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B238666-52FE-402E-9F94-C77D7883C84A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0010DA6-7CD4-4E40-9775-427FC473EBE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0010DA6-7CD4-4E40-9775-427FC473EBE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0010DA6-7CD4-4E40-9775-427FC473EBE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0010DA6-7CD4-4E40-9775-427FC473EBE6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
