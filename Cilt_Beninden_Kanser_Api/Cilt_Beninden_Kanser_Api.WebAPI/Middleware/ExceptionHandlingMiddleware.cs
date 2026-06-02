@@ -1,4 +1,5 @@
 using System.Net;
+using Cilt_Beninden_Kanser_Api.Domain.Exceptions;
 
 namespace Cilt_Beninden_Kanser_Api.WebAPI.Middleware;
 
@@ -18,6 +19,16 @@ public class ExceptionHandlingMiddleware
         try
         {
             await _next(context);
+        }
+        catch (DomainException ex)
+        {
+            _logger.LogWarning(ex, "İş kuralı hatası: {Message}", ex.Message);
+
+            context.Response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
+            context.Response.ContentType = "application/json";
+
+            var response = new { message = ex.Message };
+            await context.Response.WriteAsJsonAsync(response);
         }
         catch (Exception ex)
         {

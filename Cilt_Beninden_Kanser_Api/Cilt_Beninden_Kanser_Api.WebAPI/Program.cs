@@ -10,7 +10,13 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("LocalFrontend", policy =>
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 builder.Services.AddFluentValidationAutoValidation();
 
@@ -49,6 +55,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.UseHttpsRedirection();
+app.UseCors("LocalFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
