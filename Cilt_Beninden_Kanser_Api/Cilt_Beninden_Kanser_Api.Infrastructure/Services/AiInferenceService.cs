@@ -35,7 +35,7 @@ public class AiInferenceService : IAiInferenceService
         if (json is null)
             throw new InvalidOperationException("FastAPI yanıtı okunamadı.");
 
-        return new AiPredictionResult(json.Label, json.Confidence, json.ModelVersion);
+        return new AiPredictionResult(json.Label, json.Confidence, json.ModelVersion, json.MaskOverlay);
     }
 
     private static string GetMimeType(string fileName) =>
@@ -49,5 +49,6 @@ public class AiInferenceService : IAiInferenceService
     internal record FastApiResponse(
         [property: JsonPropertyName("label")] string Label,
         [property: JsonPropertyName("confidence")] double Confidence,
-        [property: JsonPropertyName("model_version")] string ModelVersion);
+        [property: JsonPropertyName("model_version")] string ModelVersion,
+        [property: JsonPropertyName("mask_overlay")] string? MaskOverlay = null);
 }

@@ -7,4 +7,5 @@ public record AnalysisResultDto(
     string ConfidencePercent,
     string ModelVersion,
     string Recommendation,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    string? MaskOverlayBase64 = null);

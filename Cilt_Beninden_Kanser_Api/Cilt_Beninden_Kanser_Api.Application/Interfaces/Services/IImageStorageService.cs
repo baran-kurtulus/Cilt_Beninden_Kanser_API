@@ -10,4 +10,13 @@ public interface IImageStorageService
         string mimeType,
         long fileSize,
         CancellationToken cancellationToken = default);
+
+    Task<string> SaveOverlayAsync(
+        Guid analysisId,
+        string base64Png,
+        CancellationToken cancellationToken = default);
+
+    Task<string?> GetOverlayBase64Async(
+        Guid analysisId,
+        CancellationToken cancellationToken = default);
 }

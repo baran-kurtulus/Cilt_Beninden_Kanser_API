@@ -11,4 +11,5 @@ public interface IAiInferenceService
 public record AiPredictionResult(
     string Label,
     double Confidence,
-    string ModelVersion);
+    string ModelVersion,
+    string? MaskOverlayBase64 = null);

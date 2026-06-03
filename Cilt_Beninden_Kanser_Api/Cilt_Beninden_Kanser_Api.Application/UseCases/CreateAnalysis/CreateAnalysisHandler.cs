@@ -9,7 +9,8 @@ namespace Cilt_Beninden_Kanser_Api.Application.UseCases.CreateAnalysis;
 
 public class CreateAnalysisHandler
 {
-    private const double ConfidenceThreshold = 0.70;
+    private const double MalignantThreshold = 0.55;
+    private const double BenignThreshold = 0.70;
 
     private readonly IAiInferenceService _aiService;
     private readonly IAnalysisResultRepository _resultRepository;
@@ -53,24 +54,36 @@ public class CreateAnalysisHandler
 
         await _resultRepository.AddAsync(result, ct);
 
-        return ToDto(result);
+        string? overlayBase64 = null;
+        if (!string.IsNullOrWhiteSpace(prediction.MaskOverlayBase64))
+        {
+            await _storageService.SaveOverlayAsync(result.Id, prediction.MaskOverlayBase64, ct);
+            overlayBase64 = prediction.MaskOverlayBase64;
+        }
+
+        return ToDto(result, overlayBase64);
     }
 
     private static DiagnosisLabel MapLabel(string label, double confidence)
     {
-        if (confidence < ConfidenceThreshold)
-            return DiagnosisLabel.Uncertain;
-
         if (label.Equals("malignant", StringComparison.OrdinalIgnoreCase))
-            return DiagnosisLabel.Malignant;
+        {
+            if (confidence >= MalignantThreshold)
+                return DiagnosisLabel.Malignant;
+            return DiagnosisLabel.Uncertain;
+        }
 
         if (label.Equals("benign", StringComparison.OrdinalIgnoreCase))
-            return DiagnosisLabel.Benign;
+        {
+            if (confidence >= BenignThreshold)
+                return DiagnosisLabel.Benign;
+            return DiagnosisLabel.Uncertain;
+        }
 
         throw new DomainException("Model geçersiz bir etiket döndürdü.");
     }
 
-    private static AnalysisResultDto ToDto(AnalysisResult result)
+    private static AnalysisResultDto ToDto(AnalysisResult result, string? maskOverlayBase64 = null)
     {
         var percent = $"{result.Confidence * 100:F2}%";
         return new AnalysisResultDto(
@@ -79,15 +92,26 @@ public class CreateAnalysisHandler
             result.Confidence,
             percent,
             result.ModelVersion,
-            GetRecommendation(result.Label),
-            result.CreatedAt);
+            GetRecommendation(result.Label, result.Confidence),
+            result.CreatedAt,
+            maskOverlayBase64);
     }
 
-    private static string GetRecommendation(DiagnosisLabel label) =>
+    private static string GetRecommendation(DiagnosisLabel label, double confidence) =>
         label switch
         {
-            DiagnosisLabel.Malignant => "Lütfen bir dermatoloğa başvurunuz.",
-            DiagnosisLabel.Uncertain => "Sonuç net değil. Lütfen yeniden deneyin veya doktora danışın.",
-            _ => "Belirgin bir risk görünmüyor. Şüphede kalırsanız doktora danışın."
+            DiagnosisLabel.Malignant => confidence >= 0.90
+                ? "Analiz sonucu yüksek güvenle kötü huylu olarak değerlendirildi. En kısa sürede bir dermatoloğa başvurmanız ve profesyonel değerlendirme almanız önemle tavsiye edilir. Erken teşhis tedavi başarısını önemli ölçüde artırmaktadır."
+                : confidence >= 0.80
+                    ? "Analiz sonucu yüksek güvenle kötü huylu olarak değerlendirildi. Bir dermatoloğa başvurarak dermatoskopik inceleme yaptırmanız önerilir. Kesin tanı için doktorunuz gerekli tetkikleri planlayacaktır."
+                    : "Analiz sonucu kötü huylu olarak değerlendirildi ancak güven düzeyi görece düşüktür. Yanlış pozitif olma ihtimaline karşı bir dermatoloğa başvurarak profesyonel değerlendirme almanızı öneririz. Dermatoskopik inceleme ve gerekirse biyopsi ile kesin tanı konulabilir.",
+            DiagnosisLabel.Uncertain => confidence >= 0.60
+                ? "Analiz sonucu net değil. Görüntü kalitesi veya benin konumu sonucu etkilemiş olabilir. Daha iyi ışıklandırma ile yakın çekim bir fotoğraf kullanarak tekrar analiz yapmanızı öneririz. Sonuç yine belirsiz çıkarsa bir dermatoloğa danışarak dermatoskopik inceleme yaptırın."
+                : "Analiz sonucu belirsiz ve güven düzeyi düşük. Büyük olasılıkla görüntü kalitesi yetersiz ya da ben yeterince net görünmüyor. Daha net, iyi odaklanmış ve yakın çekim bir fotoğraf ile yeniden deneyin. Alternatif olarak doğrudan bir dermatoloğa başvurarak profesyonel değerlendirme almanızı öneririz.",
+            _ => confidence >= 0.95
+                ? "Analiz sonucu yüksek güvenle iyi huylu olarak değerlendirildi. Herhangi bir risk belirtisi görülmemektedir. Yine de benlerinizi düzenli aralıklarla kontrol etmenizi; şekil, renk, boyut veya sınırlarında değişiklik fark etmeniz durumunda bir dermatoloğa başvurmanızı öneririz."
+                : confidence >= 0.85
+                    ? "Analiz sonucu iyi huylu olarak değerlendirildi. Güven düzeyi yüksektir ancak kesin tanı değildir. Benlerinizde asimetri, düzensiz sınır, renk değişikliği veya büyüme gibi değişiklikler olursa bir dermatoloğa başvurun. Yılda bir kez dermatolojik muayene önerilir."
+                    : "Analiz sonucu iyi huylu olarak değerlendirildi ancak güven düzeyi orta seviyededir. Daha net bir sonuç için farklı açıdan veya daha yüksek çözünürlüklü bir fotoğrafla tekrar analiz yapabilirsiniz. Şüphe durumunda mutlaka bir dermatoloğa başvurun."
         };
 }

@@ -22,6 +22,38 @@ public class LocalImageStorageService : IImageStorageService
         _logger = logger;
     }
 
+    public async Task<string> SaveOverlayAsync(
+        Guid analysisId,
+        string base64Png,
+        CancellationToken cancellationToken = default)
+    {
+        Directory.CreateDirectory(_rootPath);
+
+        var fileName = $"{analysisId:D}_overlay.png";
+        var filePath = Path.Combine(_rootPath, fileName);
+
+        var bytes = Convert.FromBase64String(base64Png);
+        await File.WriteAllBytesAsync(filePath, bytes, cancellationToken);
+
+        _logger.LogInformation("Segmentation overlay saved: {Path}", filePath);
+        return filePath;
+    }
+
+    public Task<string?> GetOverlayBase64Async(
+        Guid analysisId,
+        CancellationToken cancellationToken = default)
+    {
+        var fileName = $"{analysisId:D}_overlay.png";
+        var filePath = Path.Combine(_rootPath, fileName);
+
+        if (!File.Exists(filePath))
+            return Task.FromResult<string?>(null);
+
+        var bytes = File.ReadAllBytes(filePath);
+        var base64 = Convert.ToBase64String(bytes);
+        return Task.FromResult<string?>(base64);
+    }
+
     public async Task<ImageRecord> SaveAsync(
         Stream imageStream,
         string originalFileName,
